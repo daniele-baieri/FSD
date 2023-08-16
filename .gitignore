@@ -31,7 +31,12 @@
 *.out
 *.app
 
+# Geometry
+*.stl
+
 
 build/
 .vscode/
 bin/
+export/
+

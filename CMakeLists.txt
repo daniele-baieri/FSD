@@ -9,10 +9,10 @@ set(jsonRoot "${CMAKE_SOURCE_DIR}/ext/json")
 add_subdirectory(${FX3DRoot})
 add_subdirectory(${jsonRoot})
 
-
+include_directories("${CMAKE_SOURCE_DIR}/include")
 
 # Executable
-set(SRC_FILES "src/main.cpp")
+set(SRC_FILES "src/main.cpp" "src/test_scene.cpp")
 
 add_executable(FSDGen ${SRC_FILES})
 set_property(TARGET FSDGen PROPERTY CXX_STANDARD 17) 
