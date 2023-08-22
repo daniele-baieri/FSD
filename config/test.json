@@ -1,7 +1,21 @@
 {
     "export": {
         "python_exec": "C:\\Users\\Daniele\\miniconda3\\envs\\waven\\python.exe",
+        "make_video_script": ".\\script\\make_video.py",
         "out_dir": "C:\\Users\\Daniele\\Documents\\Research\\GLADIA\\FluidSimulationsDataset\\export\\test\\",
+        "cameras": {
+            "width": 1366,
+            "height": 768,
+            "fov": 100.0,
+            "positions": [
+                [128.0, 0.0, 128.0],
+                [0.0, 128.0, 128.0]
+            ],
+            "rotations": [
+                [90.0, 180.0],
+                [90.0, 90.0]
+            ]
+        },
         "fps": 30,
         "simulation_steps": 90,
         "update_dt": 30,

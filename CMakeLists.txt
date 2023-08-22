@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.16.0)
 project(FSD LANGUAGES C CXX)
 
 
-
 set(FX3DRoot "${CMAKE_SOURCE_DIR}/ext/FluidX3D")
 set(jsonRoot "${CMAKE_SOURCE_DIR}/ext/json")
+
 
 add_subdirectory(${FX3DRoot})
 add_subdirectory(${jsonRoot})
@@ -12,7 +12,7 @@ add_subdirectory(${jsonRoot})
 include_directories("${CMAKE_SOURCE_DIR}/include")
 
 # Executable
-set(SRC_FILES "src/main.cpp" "src/test_scene.cpp")
+set(SRC_FILES "src/main.cpp" "src/test_scene.cpp" "src/fsd_scene.cpp")
 
 add_executable(FSDGen ${SRC_FILES})
 set_property(TARGET FSDGen PROPERTY CXX_STANDARD 17) 
