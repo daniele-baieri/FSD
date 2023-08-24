@@ -4,8 +4,8 @@
         "make_video_script": ".\\script\\make_video.py",
         "out_dir": "C:\\Users\\Daniele\\Documents\\Research\\GLADIA\\FluidSimulationsDataset\\export\\test\\",
         "cameras": {
-            "width": 1366,
-            "height": 768,
+            "width": 1920,
+            "height": 1080,
             "fov": 100.0,
             "positions": [
                 [128.0, 0.0, 128.0],

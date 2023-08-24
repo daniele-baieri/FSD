@@ -5,7 +5,7 @@
 
 
 void FSDScene::config_graphics(const nlohmann::json &config) {
-    lbm->graphics.visualization_modes = VIS_PHI_RASTERIZE|VIS_FLAG_SURFACE;
+    lbm->graphics.visualization_modes = VIS_PHI_RAYTRACE;
 }
 
 void FSDScene::config_export(const nlohmann::json &config) {
@@ -72,7 +72,7 @@ std::string FSDScene::geometry_out_dir() const {
 
 void FSDScene::export_geometry() const {
     std::string geometry_out = geometry_out_dir();
-    lbm->phi.write_device_to_vtk(geometry_out);
+    lbm->phi.write_device_to_sparse(geometry_out);
 }
 
 void FSDScene::export_frame() {
