@@ -1,19 +1,26 @@
 {
+    "graphics": {
+        "skybox": ".\\assets\\hdri\\promenade.png"
+    },
     "export": {
         "python_exec": "C:\\Users\\Daniele\\miniconda3\\envs\\waven\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
         "out_dir": "C:\\Users\\Daniele\\Documents\\Research\\GLADIA\\FluidSimulationsDataset\\export\\test\\",
         "cameras": {
-            "width": 1920,
-            "height": 1080,
+            "width": 1080,
+            "height": 720,
             "fov": 100.0,
             "positions": [
                 [128.0, 0.0, 128.0],
-                [0.0, 128.0, 128.0]
+                [0.0, 128.0, 128.0],
+                [256.0, 128.0, 128.0],
+                [128.0, 256.0, 256.0]
             ],
             "rotations": [
                 [90.0, 180.0],
-                [90.0, 90.0]
+                [90.0, 90.0],
+                [180.0, 180.0],
+                [45.0, 180.0]
             ]
         },
         "fps": 30,
@@ -37,7 +44,7 @@
     },
     "obstacles": [
         {
-            "mesh_path": ".\\assets\\shapes\\ship.stl",
+            "mesh_path": ".\\assets\\stl\\ship.stl",
             "center": [128.0, 128.0, 64.0],
             "rotation": [0.0, 0.0, 90.0],
             "scale": [1.0, 1.0, 1.0],
@@ -46,11 +53,9 @@
     ],
     "fluids": [
         {
-            "mesh_path": ".\\assets\\shapes\\ship.stl",
-            "center": [128.0, 128.0, 128.0],
-            "rotation": [90.0, 0.0, 0.0],
-            "scale": [1.0, 1.0, 1.0],
-            "size": 86.0
+            "center": [64.0, 128.0, 64.0],
+            "sides": [32.0, 256.0, 128.0],
+            "rotation": [0.0, 0.0, 0.0]
         }
     ]
 }

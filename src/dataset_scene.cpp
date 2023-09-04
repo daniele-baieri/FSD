@@ -1,14 +1,14 @@
 
-#include <fsd_scene.hpp>
+#include <dataset_scene.hpp>
 #include <utils/coo_tensor_float.hpp>
 #include <fx3d/settings.hpp>
 
 
-void FSDScene::config_graphics(const nlohmann::json &config) {
-    lbm->graphics.visualization_modes = VIS_PHI_RAYTRACE;
-}
+// void FSDScene::config_graphics(const nlohmann::json &config) {
+//    lbm->graphics.visualization_modes = VIS_PHI_RAYTRACE;
+// }
 
-void FSDScene::config_export(const nlohmann::json &config) {
+void DatasetScene::config_export(const nlohmann::json &config) {
 	if (config.contains("export")) {
 		nlohmann::json exp_config = config["export"];
 		python = exp_config["python_exec"];
@@ -48,7 +48,7 @@ void FSDScene::config_export(const nlohmann::json &config) {
     }
 }
 
-void FSDScene::switch_ith_camera(const uint i) const {
+void DatasetScene::switch_ith_camera(const uint i) const {
     Camera& cam = fx3d::GraphicsSettings::GetCamera();
     cam.pos = cam_pos[i];
     cam.rx = cam_rot[i].first;
@@ -56,26 +56,26 @@ void FSDScene::switch_ith_camera(const uint i) const {
     cam.update_matrix();
 }
 
-std::string FSDScene::get_ith_out_dir(const uint i) const {
-    return (out_dir_path / ("view_" + std::to_string(i))).string();
+std::string DatasetScene::get_ith_out_dir(const uint i) const {
+    return (out_dir_path / ("camera_" + std::to_string(i))).string();
 }
 
-void FSDScene::make_ith_video(const uint i) const {
+void DatasetScene::make_ith_video(const uint i) const {
     std::string view_out = get_ith_out_dir(i);
     std::string cmd = python + " " + script_png2mp4 + " " + view_out;
     system(cmd.c_str());
 }
 
-std::string FSDScene::geometry_out_dir() const {
+std::string DatasetScene::geometry_out_dir() const {
     return (out_dir_path / "density").string();
 }
 
-void FSDScene::export_geometry() const {
+void DatasetScene::export_geometry() const {
     std::string geometry_out = geometry_out_dir();
     lbm->phi.write_device_to_sparse(geometry_out);
 }
 
-void FSDScene::export_frame() {
+void DatasetScene::export_frame() {
     std::string view_out;
     for (uint i = 0; i < n_views; i++) {
         view_out = get_ith_out_dir(i);
@@ -85,12 +85,12 @@ void FSDScene::export_frame() {
     export_geometry();
 }
 
-void FSDScene::postprocess() {
+void DatasetScene::postprocess() {
     for (uint i = 0; i < n_views; i++) {
         make_ith_video(i);
     }
 }
 
-FSDScene::~FSDScene() {
+DatasetScene::~DatasetScene() {
     fx3d::Scene::~Scene();
 }

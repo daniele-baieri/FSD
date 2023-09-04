@@ -5,7 +5,7 @@
 #include <fx3d/scenes.hpp>
 
 
-class FSDScene : public fx3d::Scene {
+class DatasetScene : public fx3d::Scene {
 
 private:
 
@@ -27,7 +27,7 @@ protected:
     std::string geometry_out_dir() const;
     void export_geometry() const;
 
-    virtual void config_graphics(const nlohmann::json &config) override; 
+    // virtual void config_graphics(const nlohmann::json &config) override; 
     virtual void config_export(const nlohmann::json &config) override;
 
     virtual void postprocess() override;
@@ -36,7 +36,7 @@ public:
 
     virtual void export_frame() override;
 
-	FSDScene() = default;
-    ~FSDScene(); 
+	DatasetScene() = default;
+    ~DatasetScene(); 
 
 };
