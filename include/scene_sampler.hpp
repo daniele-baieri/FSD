@@ -11,23 +11,29 @@ enum VarType {
     uniform,
     normal,
     collection,
+    fixed,
     dam,
     cuboid,
     sphere,
-    geometry
+    //geometry
 };
 const std::map<const char*, VarType> VarTypeMap {
     {"linscale", VarType::linscale},
     {"uniform", VarType::uniform},
     {"normal", VarType::normal},
     {"collection", VarType::collection},
+    {"fixed", VarType::fixed},
     {"dam", VarType::dam},
     {"cuboid", VarType::cuboid},
     {"sphere", VarType::sphere},
-    {"geometry", VarType::geometry},
+    //{"geometry", VarType::geometry},
 };
 const std::random_device rd;
 const std::mt19937 gen(rd());
+
+using uint2 = std::pair<uint, uint>;
+using float2 = std::pair<float, float>;
+
 
 
 struct Cuboid {
@@ -50,7 +56,7 @@ struct Sphere {
         center(center), radius(radius) {}
 
 };
-
+/*
 struct Geometry {
 
     const std::string asset;
@@ -63,6 +69,7 @@ struct Geometry {
         center(center), scale(scale), rotation(rotation), asset(asset), size(size) {}
 
 };
+*/
 
 template<typename T>
 void sample_collection(std::vector<T>& out, const std::vector<T>& collection) {
@@ -103,42 +110,80 @@ void sample_uniform(std::vector<float>& out, const float lo, const float hi, con
 }
 
 void sample_cuboid(
-    std::vector<Cuboid>& out, const uint3 N, const uint min_side_length, 
-    const uint max_side_length, const uint nsamples
+    std::vector<Cuboid>& out, const uint3 N, 
+    const uint2 cx_range, const uint2 cy_range, const uint2 cz_range, 
+    const uint2 sx_range, const uint2 sy_range, const uint2 sz_range, 
+    const float2 rx_range, const float2 ry_range, const float2 rz_range, 
+    const bool on_ground, const uint nsamples
 ) {
 
-    std::uniform_int_distribution<uint> side_dist(min_side_length, N.x);
+    std::uniform_int_distribution<uint> adist(sx_range.first, sx_range.second);
+    std::uniform_int_distribution<uint> bdist(sy_range.first, sy_range.second);
+    std::uniform_int_distribution<uint> cdist(sz_range.first, sz_range.second);
 
-    uint half_side_l = floor((float)min_side_length / 2.0f);
-    std::uniform_int_distribution<uint> xdist(half_side_l, N.x);
-    std::uniform_int_distribution<uint> ydist(1u, N.y);
+    std::uniform_int_distribution<uint> xdist(cx_range.first, cx_range.second);
+    std::uniform_int_distribution<uint> ydist(cy_range.first, cy_range.second);
     std::uniform_int_distribution<uint> zdist;
     if (on_ground) {
-        zdist = std::uniform_int_distribution<uint>(min_ctr_z, floor((float)N.z / 2.0f) - 1);
+        zdist = std::uniform_int_distribution<uint>(cz_range.first, min(cz_range.second, floor((float)N.z/2.0f)));
     } else {
-        zdist = std::uniform_int_distribution<uint>(min_ctr_z, N.z - min_ctr_z);
+        zdist = std::uniform_int_distribution<uint>(cz_range.first, cz_range.second);
     }
 
+    std::uniform_int_distribution<float> rxdist(rx_range.first, rx_range.second);
+    std::uniform_int_distribution<float> rydist(ry_range.first, ry_range.second);
+    std::uniform_int_distribution<float> rzdist(rz_range.first, rz_range.second);
 
+    //uint x, y, z, a, b, c;
     float3 center, sides, rotation;
     for (int i = 0; i < nsamples; i++) {
-        sides = {side_dist(gen), side_dist(gen), side_dist(gen)};
         center = {xdist(gen), ydist(gen), zdist(gen)};
+        if (on_ground) {
+            cdist = std::uniform_int_distribution<uint> cdist(center.z * 2u, center.z * 2u);
+        } 
+        sides = {adist(gen), bdist(gen), cdist(gen)};
+        rotation = {rxdist(gen), rydist(gen), rzdist(gen)};
         out.emplace_back(center, sides, rotation);
     }
     
 }
 
-void sample_sphere(std::vector<Sphere>& out, const uint3 N, bool on_ground, const uint nsamples) {
-    std::uniform_int_distribution<uint> dist(???);
+void sample_sphere(
+    std::vector<Sphere>& out, const uint3 N, 
+    const uint2 cx_range, const uint2 cy_range, const uint2 cz_range, 
+    const float2 rad_range, const bool on_ground, const uint nsamples) 
+{
+
+    std::uniform_int_distribution<uint> rdist(sz_range.first, sz_range.second);
+
+    std::uniform_int_distribution<uint> xdist(cx_range.first, cx_range.second);
+    std::uniform_int_distribution<uint> ydist(cy_range.first, cy_range.second);
+    std::uniform_int_distribution<uint> zdist;
+    if (on_ground) {
+        zdist = std::uniform_int_distribution<uint>(cz_range.first, min(cz_range.second, floor((float)N.z/2.0f)));
+    } else {
+        zdist = std::uniform_int_distribution<uint>(cz_range.first, cz_range.second);
+    }
+
+    //uint x, y, z, a, b, c;
+    float3 center;
+    float radius;
+    for (int i = 0; i < nsamples; i++) {
+        center = {xdist(gen), ydist(gen), zdist(gen)};
+        if (on_ground) {
+            rdist = std::uniform_int_distribution<uint> cdist(center.z, center.z);
+        } 
+        radius = rdist(gen);
+        out.emplace_back(center, radius);
+    }
 
 }
-
+/*
 void sample_geometry(std::vector<Geometry>& out, const uint3 N, bool on_ground, const uint nsamples) {
-    std::uniform_int_distribution<uint> dist(???);
+    //std::uniform_int_distribution<uint> dist(???);
 
 }
-
+*/
 
 
 template<typename T>
@@ -177,9 +222,9 @@ public:
             case VarType::sphere:
                 sample_sphere(samples, args...);
                 break;
-            case VarType::geometry:
+            /*case VarType::geometry:
                 sample_geometry(samples, args...);
-                break;
+                break;*/
         }
     }
 

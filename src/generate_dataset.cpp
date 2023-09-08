@@ -34,9 +34,6 @@ int main(int argc, char** argv) {
 
     make_scenes(config);
 
-    
-    fx3d::Settings::EnableFeature(fx3d::Feature::VOLUME_FORCE);
-    fx3d::Settings::EnableFeature(fx3d::Feature::SURFACE);
 
     std::filesystem::path root_path = config["export_root"];
     std::filesystem::path log_path = root_path / "log.txt";

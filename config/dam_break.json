@@ -2,6 +2,7 @@
     "graphics": {
         "skybox": ".\\assets\\hdri\\promenade.png"
     },
+    "scene_class": "DamBreak",
     "export": {
         "python_exec": "C:\\Users\\Daniele\\miniconda3\\envs\\waven\\python.exe",
         "make_video_script": ".\\script\\make_video.py",

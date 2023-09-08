@@ -41,14 +41,7 @@
             "simulation_steps": 90,
             "update_dt": 30,
             "video_seconds": 3
-        },
-        "obstacles": [
-            {
-                "center": [128.0,128.0,64.0],
-                "sides": [32.0,32.0,32.0],
-                "rotation": [45.0, 0.0, 45.0]
-            }
-        ]
+        }
     },
     "variables": {
         "sim_params": {
@@ -65,23 +58,6 @@
                 "nsteps": 3
             }
         },
-        "obstacles": [
-            {
-                "type": "cuboid",
-                "N": [256, 256, 256],
-                "center_range": [
-                    [11, 244], [11, 244], [11, 20]
-                ],
-                "sides_range": [
-                    [5, 20], [5, 20], [5, 20]
-                ],
-                "rot_range": [
-                    [0.0, 90.0], [0.0, 90.0], [0.0, 90.0]
-                ],
-                "on_ground": false,
-                "nsamples": 5
-            }
-        ],
         "fluids": [
             {
                 "type": "cuboid",
