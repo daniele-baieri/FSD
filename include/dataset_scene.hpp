@@ -14,6 +14,7 @@ private:
     std::string script_png2mp4;
     std::vector<float3> cam_pos;
     std::vector<std::pair<float, float>> cam_rot;
+    std::vector<float> cam_zoom;
     uint n_views;
 
 protected:

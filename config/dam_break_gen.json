@@ -12,28 +12,30 @@
             "alpha": 0.0,
             "beta": 0.0,
             "P_n": 0,
-            "P_rho": 0.0
+            "P_rho": 0.0,
+            "nu": 0.005,
+            "sigma": 0.0001
         },
         "graphics": {
-            "skybox": ".\\assets\\hdri\\promenade.png"
+            "skybox": ".\\assets\\hdri\\netball_court.png"
         },
         "export": {
-            "python_exec": "C:\\Users\\Daniele\\miniconda3\\envs\\waven\\python.exe",
+            "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
             "make_video_script": ".\\script\\make_video.py",
             "cameras": {
                 "width": 1080,
                 "height": 720,
                 "fov": 100.0,
                 "positions": [
-                    [128.0, 0.0, 128.0],
-                    [0.0, 128.0, 128.0],
-                    [256.0, 128.0, 128.0],
+                    [128.0, -64.0, 256.0],
+                    [0.0, 128.0, 256.0],
+                    [256.0, 128.0, 256.0],
                     [128.0, 256.0, 256.0]
                 ],
                 "rotations": [
-                    [90.0, 180.0],
-                    [90.0, 90.0],
-                    [180.0, 180.0],
+                    [135.0, 180.0],
+                    [135.0, 90.0],
+                    [135.0, 180.0],
                     [45.0, 180.0]
                 ]
             },
@@ -44,20 +46,6 @@
         }
     },
     "variables": {
-        "sim_params": {
-            "nu": {
-                "type": "linscale",
-                "vmin": 0.001,
-                "vmax": 0.009,
-                "nsteps": 5
-            },
-            "sigma": {
-                "type": "linscale",
-                "vmin": 0.00005,
-                "vmax": 0.00015,
-                "nsteps": 3
-            }
-        },
         "fluids": [
             {
                 "type": "cuboid",
@@ -72,7 +60,7 @@
                     [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]
                 ],
                 "on_ground": true,
-                "nsamples": 5
+                "nsamples": 100
             }
         ]
     }

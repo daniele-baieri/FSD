@@ -1,27 +1,30 @@
 {
     "graphics": {
-        "skybox": ".\\assets\\hdri\\promenade.png"
+        "skybox": ".\\assets\\hdri\\netball_court.png"
     },
     "scene_class": "DamBreak",
     "export": {
-        "python_exec": "C:\\Users\\Daniele\\miniconda3\\envs\\waven\\python.exe",
+        "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
-        "out_dir": "C:\\Users\\Daniele\\Documents\\Research\\GLADIA\\FluidSimulationsDataset\\export\\test\\",
+        "out_dir": ".\\export\\test-dam-break",
         "cameras": {
             "width": 1080,
             "height": 720,
             "fov": 100.0,
             "positions": [
-                [128.0, 0.0, 128.0],
-                [0.0, 128.0, 128.0],
-                [256.0, 128.0, 128.0],
-                [128.0, 256.0, 256.0]
+                [128.0, -256.0, 256.0],
+                [0.0, 128.0, 256.0],
+                [384.0, 128.0, 128.0],
+                [256.0, 384.0, 256.0]
             ],
             "rotations": [
-                [90.0, 180.0],
+                [180.0, 135.0],
                 [90.0, 90.0],
-                [180.0, 180.0],
+                [90.0, 180.0],
                 [45.0, 180.0]
+            ],
+            "zoom": [
+                250.0, 250.0, 250.0, 250.0
             ]
         },
         "fps": 30,

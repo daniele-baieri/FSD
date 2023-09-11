@@ -27,15 +27,17 @@ void DatasetScene::config_export(const nlohmann::json &config) {
             cam.update_matrix();
             auto positions = cam_config["positions"];
             auto rotations = cam_config["rotations"];
+            auto zooms = cam_config["zoom"];
             assert(positions.size() == rotations.size());
+            assert(positions.size() == zooms.size());
             n_views = positions.size();
-            for (auto ptr = positions.begin(); ptr != positions.end(); ptr++) {
-                std::vector<float> xyz = *ptr;
+            for (uint i = 0; i < n_views; i++) {
+                std::vector<float> xyz = positions[i];
+                std::vector<float> uv = rotations[i];
+                float z = zooms[i];
                 cam_pos.emplace_back(xyz[0], xyz[1], xyz[2]);
-            }
-            for (auto ptr = rotations.begin(); ptr != rotations.end(); ptr++) {
-                std::vector<float> uv = *ptr;
                 cam_rot.emplace_back(radians(uv[0]), radians(uv[1]));
+                cam_zoom.push_back(z);
             }
         }
 	}
@@ -53,6 +55,7 @@ void DatasetScene::switch_ith_camera(const uint i) const {
     cam.pos = cam_pos[i];
     cam.rx = cam_rot[i].first;
     cam.ry = cam_rot[i].second;
+    cam.set_zoom(cam_zoom[i]);
     cam.update_matrix();
 }
 

@@ -187,7 +187,7 @@ def make_scenes(config, root):
 
 def generate(root, stdout):
     for sim_dir in root.iterdir():
-        print("Simulating scene: {}".format(str(sim_dir)), file=stdout)
+        print("Simulating scene: {}".format(str(sim_dir)))
         command = "{} {}".format(SIMULATE_EXEC, str(sim_dir / "config.json"))
         subprocess.call(command, stdout=stdout)
 
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     print("Generating scene configuration files...")
 
     root_path = pathlib.Path(config["export_root"])
-    root_path.mkdir(exist_ok=True)
+    root_path.mkdir(exist_ok=True, parents=True)
 
     make_scenes(config, root_path)
 
