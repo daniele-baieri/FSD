@@ -5,8 +5,6 @@
 #include <fx3d/settings.hpp>
 #include <fx3d/scenes.hpp>
 #include <fx3d/info.hpp>
-#include "dataset_scene.hpp"
-#include "dam_break.hpp"
 #include "scene_select.hpp"
 
 
@@ -23,9 +21,6 @@ int main(int argc, char** argv) {
 
     std::ifstream stream(argv[1]);
     nlohmann::json j = nlohmann::json::parse(stream);
-
-    fx3d::Settings::EnableFeature(fx3d::Feature::VOLUME_FORCE);
-    fx3d::Settings::EnableFeature(fx3d::Feature::SURFACE);
 
     // DatasetScene scene;
     std::string scene_type = j["scene_class"];

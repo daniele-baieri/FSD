@@ -1,5 +1,4 @@
-
-#include <dataset_scene.hpp>
+#include "scenes.hpp"
 #include <utils/coo_tensor_float.hpp>
 #include <fx3d/settings.hpp>
 

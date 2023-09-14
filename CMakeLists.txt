@@ -20,7 +20,7 @@ add_subdirectory("${JSONRoot}")
 include_directories("${CMAKE_SOURCE_DIR}/include")
 
 # Executable
-set(SIM_SRC "src/simulate_scene.cpp" "src/dataset_scene.cpp" "src/dam_break.cpp")
+set(SIM_SRC "src/simulate_scene.cpp" "src/dataset_scene.cpp" "src/dam_break.cpp" "src/droplets.cpp" "src/ballistic.cpp" "src/ball_drop.cpp")
 #set(GEN_SRC "src/generate_dataset.cpp" "src/dataset_scene.cpp")
 
 add_executable(SimulateScene ${SIM_SRC})

@@ -1,0 +1,61 @@
+{
+    "graphics": {
+        "skybox": ".\\assets\\hdri\\netball_court.png"
+    },
+    "scene_class": "Droplets",
+    "export": {
+        "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
+        "make_video_script": ".\\script\\make_video.py",
+        "out_dir": ".\\export\\test-droplets",
+        "cameras": {
+            "width": 1920,
+            "height": 1080,
+            "fov": 100.0,
+            "positions": [
+                [128.0, -256.0, 256.0],
+                [0.0, 128.0, 256.0],
+                [384.0, 128.0, 128.0],
+                [256.0, 384.0, 256.0]
+            ],
+            "rotations": [
+                [180.0, 135.0],
+                [90.0, 90.0],
+                [90.0, 180.0],
+                [45.0, 180.0]
+            ],
+            "zoom": [
+                150.0, 150.0, 150.0, 150.0
+            ]
+        },
+        "fps": 30,
+        "simulation_steps": 90,
+        "update_dt": 30,
+        "video_seconds": 3
+    },
+    "sim_params": {
+        "Nx": 256,
+        "Ny": 256,
+        "Nz": 128,
+        "fx": 0.0,
+        "fy": 0.0,
+        "fz": 0.0,
+        "nu": 0.014,
+        "sigma": 0.0001,
+        "alpha": 0.0,
+        "beta": 0.0,
+        "P_n": 0,
+        "P_rho": 0.0,
+        "F_scale": [-0.001, -0.001, -0.0005],
+        "v_init": [0.025, -0.2]
+    },
+    "fluids": [
+        {
+            "center": [128.0, 118.0, 64.0],
+            "radius": 32
+        },
+        {
+            "center": [158.0, 168.0, 64.0],
+            "radius": 12
+        }
+    ]
+}

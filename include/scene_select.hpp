@@ -3,8 +3,7 @@
 #include <map>
 #include <string>
 #include <fx3d/scenes.hpp>
-#include "dam_break.hpp"
-#include "dataset_scene.hpp"
+#include "scenes.hpp"
 
 
 
@@ -13,6 +12,9 @@ const std::map<std::string, std::function<fx3d::Scene*()>> SceneTypeMap {
     {"Scene", [](){return new fx3d::Scene();}},
     {"DatasetScene", [](){return new DatasetScene();}},
     {"DamBreak", [](){return new DamBreak();}},
+    {"Droplets", [](){return new Droplets();}},
+    {"Ballistic", [](){return new Ballistic();}},
+    {"BallDrop", [](){return new BallDrop();}}
 };
 
 

@@ -94,7 +94,7 @@ def sample_sphere(N, center_range, rad_range, on_ground, nsamples):
     if on_ground:
         cz = np.random.uniform(center_range[2][0], min(center_range[2][1], N[2]/2), (nsamples,))
     else:
-        cz = np.random.uniform(center_range[2][0], center_range[2][1])
+        cz = np.random.uniform(center_range[2][0], center_range[2][1], (nsamples,))
 
     if on_ground:
         rad = cz
@@ -201,6 +201,8 @@ if __name__ == "__main__":
     root_path = pathlib.Path(config["export_root"])
     root_path.mkdir(exist_ok=True, parents=True)
 
+    if "seed" in config.keys():
+        np.random.seed(config["seed"])
     make_scenes(config, root_path)
 
     log_path = root_path / "log.txt"
