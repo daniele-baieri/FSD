@@ -19,6 +19,7 @@ void DatasetScene::config_export(const nlohmann::json &config) {
             Camera& cam = fx3d::GraphicsSettings::GetCamera();
             delete[] cam.zbuffer;
             delete[] cam.bitmap;
+            cam.free = true;
             cam.bitmap = new int[cam.width * cam.height];
             cam.zbuffer = new int[cam.width * cam.height];
             cam.set_zoom(1.0);

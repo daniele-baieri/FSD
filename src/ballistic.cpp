@@ -23,7 +23,7 @@ void Ballistic::custom_grid_initialization() {
             lbm->u.y[n] = v_init.y;
             lbm->u.z[n] = v_init.z;
 		}
-		if(x==0u||x==Nx-1u||y==0u||y==Ny-1u||z==0u||z==Nz-1u) 
+		if(x==0u||x==Nx-1u||y==0u||y==Ny-1u||z<=2u||z==Nz-1u) 
             lbm->flags[n] = TYPE_S; // all non periodic
 	}
 }
@@ -35,11 +35,6 @@ void Ballistic::config_sim_params(const nlohmann::json &config) {
         v_init = float3(v_init_[0], v_init_[1], v_init_[2]);
     }
     DatasetScene::config_sim_params(config);
-}
-
-void Ballistic::enable_features() {
-    fx3d::Settings::EnableFeature(fx3d::Feature::FORCE_FIELD);
-    DatasetScene::enable_features();
 }
 
 Ballistic::~Ballistic() {

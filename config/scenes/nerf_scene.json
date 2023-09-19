@@ -1,5 +1,5 @@
 {
-    "scene_class": "Ballistic",
+    "scene_class": "NeRFScene",
     "sim_params": {
         "Nx": 256,
         "Ny": 256,
@@ -20,43 +20,42 @@
         "skybox": ".\\assets\\hdri\\pine_attic.png"
     },
     "export": {
-        "out_dir": ".\\export\\test-ballistic",
+        "out_dir": ".\\export\\test-nerf_scene",
         "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
         "cameras": {
-            "width": 1920,
-            "height": 1080,
+            "width": 800,
+            "height": 800,
             "fov": 100.0,
             "positions": [
-                [128.0, 128.0, 256.0],
-                [128.0, 256.0, 128.0]
+                [-27.15, 27.15, -70.0],
+                [58.22, 0.0, -90.0],
+                [-45.0, 45.0, -100.0],
+                [0.0, -50.3, -80.0]
             ],
             "rotations": [
-                [90.0, 90.0],
-                [45.0, 180.0]
+                [225.0, 146.5],
+                [90.0, 146.86],
+                [225.0, 156.25],
+                [0.0, 136.34]
             ],
             "zoom": [
-                150.0, 150.0
+                1.0, 1.0, 1.0, 1.0
             ]
         },
         "fps": 30,
-        "simulation_steps": 90,
+        "simulation_steps": 60,
         "update_dt": 30,
-        "video_seconds": 3
+        "video_seconds": 2
     },
-    "obstacles": [
-        {
-            "mesh_path": ".\\assets\\stl\\bust.stl",
-            "center": [128.0, 180.0, 51.0],
-            "rotation": [90.0, 0.0, 0.0],
-            "scale": [1.0, 1.0, 1.0],
-            "size": 100.0
-        }
-    ],
+    "obstacles": [],
     "fluids": [
         {
-            "center": [128.0, 32.0, 128.0],
-            "radius": 16
+            "mesh_path": ".\\assets\\stl\\baseball.stl",
+            "center": [128.0, 128.0, 20.0],
+            "rotation": [90.0, 0.0, 0.0],
+            "scale": [1.0, 1.0, 1.0],
+            "size": 20.0
         }
     ]
 }

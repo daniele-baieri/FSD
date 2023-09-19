@@ -11,7 +11,7 @@ using float2 = std::pair<float, float>;
 
 class DatasetScene : public fx3d::Scene {
 
-private:
+protected:
 
     std::filesystem::path                out_dir_path;
     std::string                          python;
@@ -20,8 +20,6 @@ private:
     std::vector<std::pair<float, float>> cam_rot;
     std::vector<float>                   cam_zoom;
     uint                                 n_views;
-
-protected:
 
     /* Video output */
     void switch_ith_camera(const uint i) const;
@@ -128,7 +126,6 @@ private:
 
 protected:
 
-    virtual void enable_features();
     virtual void config_fluid_bodies(const nlohmann::json &config);
     virtual void config_sim_params(const nlohmann::json &config);
 
@@ -138,5 +135,21 @@ public:
 
 	Ballistic() = default;
     ~Ballistic(); 
+
+};
+
+
+class NeRFScene : public DatasetScene {
+
+
+protected:
+
+    void postprocess() override;
+
+public:
+
+
+    bool is_boundary(uint x, uint y, uint z) const;
+
 
 };
