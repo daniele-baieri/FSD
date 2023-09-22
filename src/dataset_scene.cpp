@@ -1,4 +1,5 @@
 #include "scenes.hpp"
+#include <iostream>
 #include <utils/coo_tensor_float.hpp>
 #include <fx3d/settings.hpp>
 
@@ -12,6 +13,21 @@ void DatasetScene::config_export(const nlohmann::json &config) {
 		nlohmann::json exp_config = config["export"];
 		python = exp_config["python_exec"];
         script_png2mp4 = exp_config["make_video_script"];
+
+        if (exp_config.contains("geometry")) {
+            std::string geometry = exp_config["geometry"];
+            if (geometry == "particles") {
+                geometry_exp = ExportType::PARTICLES;
+            } else if (geometry == "density") {
+                geometry_exp = ExportType::DENSITY;
+            } else {
+                std::cerr << "Unknown geometry type, defaulting to ExportType::DENSITY" << std::endl;
+            }
+        } else {
+            std::cerr << "Geometry export undefined, defaulting to ExportType::DENSITY" << std::endl;
+            geometry_exp = ExportType::DENSITY;
+        }
+
         if (exp_config.contains("cameras")) {
             nlohmann::json cam_config = exp_config["cameras"];
             fx3d::GraphicsSettings::SetWidth(cam_config["width"]);
@@ -70,12 +86,16 @@ void DatasetScene::make_ith_video(const uint i) const {
 }
 
 std::string DatasetScene::geometry_out_dir() const {
-    return (out_dir_path / "density").string();
+    return (out_dir_path / "frames").string();
 }
 
 void DatasetScene::export_geometry() const {
     std::string geometry_out = geometry_out_dir();
-    lbm->phi.write_device_to_sparse(geometry_out);
+    if (geometry_exp == ExportType::DENSITY) {
+        lbm->phi.write_device_to_sparse(geometry_out);
+    } else if (geometry_exp == ExportType::PARTICLES) {
+        lbm->write_particles(fx3d::default_filename(geometry_out, "particles", ".dat", lbm->get_t()));
+    }
 }
 
 void DatasetScene::export_frame() {
@@ -92,6 +112,11 @@ void DatasetScene::postprocess() {
     for (uint i = 0; i < n_views; i++) {
         make_ith_video(i);
     }
+}
+
+void DatasetScene::enable_features() {
+    fx3d::Settings::EnableFeature(fx3d::Feature::PARTICLES);
+    fx3d::Scene::enable_features();
 }
 
 DatasetScene::~DatasetScene() {

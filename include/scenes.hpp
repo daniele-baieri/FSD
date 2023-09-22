@@ -8,11 +8,18 @@
 using float2 = std::pair<float, float>;
 
 
+enum ExportType {
+    PARTICLES,
+    DENSITY
+};
+
+
 
 class DatasetScene : public fx3d::Scene {
 
 protected:
 
+    ExportType                           geometry_exp;
     std::filesystem::path                out_dir_path;
     std::string                          python;
     std::string                          script_png2mp4;
@@ -34,6 +41,8 @@ protected:
     virtual void config_export(const nlohmann::json &config) override;
 
     virtual void postprocess() override;
+    
+    virtual void enable_features();
 
 public:
 
