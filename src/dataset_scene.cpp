@@ -122,3 +122,8 @@ void DatasetScene::enable_features() {
 DatasetScene::~DatasetScene() {
     fx3d::Scene::~Scene();
 }
+
+
+void DatasetScene::select_rendering_mode(const nlohmann::json &config) {
+    lbm->graphics.visualization_modes = VIS_PARTICLES;
+}

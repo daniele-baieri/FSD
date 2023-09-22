@@ -2,6 +2,14 @@
 #include <utils/shapes.hpp>
 
 
+bool Ballistic::is_fluid(uint x, uint y, uint z) const {
+    return sphere(x, y, z, center, radius);
+}
+
+bool Ballistic::is_boundary(uint x, uint y, uint z) const {
+    return z <= 2u || fx3d::Scene::is_boundary(x, y, z);
+}
+
 void Ballistic::config_fluid_bodies(const nlohmann::json &config) {
 	if (config.contains("fluids")) {
 		nlohmann::json fluids = config["fluids"];
@@ -13,18 +21,16 @@ void Ballistic::config_fluid_bodies(const nlohmann::json &config) {
 }
 
 void Ballistic::custom_grid_initialization() {
+    fx3d::Scene::custom_grid_initialization();
     uint Nx = lbm->get_Nx(), Ny = lbm->get_Ny(), Nz = lbm->get_Nz();
     uint x, y, z; 
     for(ulong n=0ull; n<lbm->get_N(); n++) { 
         lbm->coordinates(n, x, y, z);
-		if(sphere(x, y, z, center, radius)) {
-			lbm->flags[n] = TYPE_F;
+		if (is_fluid(x, y, z)) {
 			lbm->u.x[n] = v_init.x;
             lbm->u.y[n] = v_init.y;
             lbm->u.z[n] = v_init.z;
 		}
-		if(x==0u||x==Nx-1u||y==0u||y==Ny-1u||z<=2u||z==Nz-1u) 
-            lbm->flags[n] = TYPE_S; // all non periodic
 	}
 }
 

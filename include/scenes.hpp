@@ -39,6 +39,7 @@ protected:
 
     // virtual void config_graphics(const nlohmann::json &config) override; 
     virtual void config_export(const nlohmann::json &config) override;
+    virtual void select_rendering_mode(const nlohmann::json &config);
 
     virtual void postprocess() override;
     
@@ -140,6 +141,8 @@ protected:
 
 public:
 
+    virtual bool is_fluid(uint x, uint y, uint z) const;
+    virtual bool is_boundary(uint x, uint y, uint z) const;
     virtual void custom_grid_initialization();
 
 	Ballistic() = default;
