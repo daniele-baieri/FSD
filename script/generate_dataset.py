@@ -47,8 +47,8 @@ class Sphere:
 
 
 
-def sample_collection(collection):
-    return collection
+def sample_collection(values):
+    return values
 
 def sample_linscale(vmin, vmax, nsteps):
     out = np.linspace(vmin, vmax, nsteps)
@@ -87,14 +87,30 @@ def sample_cuboid(N, center_range, sides_range, rot_range, on_ground, nsamples):
     return out
     
 
-def sample_sphere(N, center_range, rad_range, on_ground, nsamples):
+def sample_sphere(N, center_range, rad_range, on_ground, inside, nsamples):
 
-    cx = np.random.uniform(center_range[0][0], center_range[0][1], (nsamples,))
-    cy = np.random.uniform(center_range[1][0], center_range[1][1], (nsamples,))
+    cx = np.random.uniform(
+        center_range[0][0] if not inside else max(center_range[0][0], rad_range[1]), 
+        center_range[0][1] if not inside else min(center_range[0][1], N[0] - rad_range[1]), 
+        (nsamples,)
+    )
+    cy = np.random.uniform(
+        center_range[1][0] if not inside else max(center_range[1][0], rad_range[1]), 
+        center_range[1][1] if not inside else min(center_range[1][1], N[1] - rad_range[1]), 
+        (nsamples,)
+    )
     if on_ground:
-        cz = np.random.uniform(center_range[2][0], min(center_range[2][1], N[2]/2), (nsamples,))
+        cz = np.random.uniform(
+            center_range[2][0] if not inside else max(center_range[2][0], rad_range[1]), 
+            min(center_range[2][1] if not inside else min(center_range[2][1], N[2] - rad_range[1]), N[2]/2), 
+            (nsamples,)
+        )
     else:
-        cz = np.random.uniform(center_range[2][0], center_range[2][1], (nsamples,))
+        cz = np.random.uniform(
+            center_range[2][0] if not inside else max(center_range[2][0], rad_range[1]), 
+            center_range[2][1] if not inside else min(center_range[2][1], N[2] - rad_range[1]), 
+            (nsamples,)
+        )
 
     if on_ground:
         rad = cz
@@ -187,6 +203,8 @@ def make_scenes(config, root):
 
 def generate(root, stdout):
     for sim_dir in root.iterdir():
+        if sim_dir.name == 'log.txt':
+            continue
         print("Simulating scene: {}".format(str(sim_dir)))
         command = "{} {}".format(SIMULATE_EXEC, str(sim_dir / "config.json"))
         subprocess.call(command, stdout=stdout)

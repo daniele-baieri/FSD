@@ -1,0 +1,85 @@
+{
+    "export_root": "D:\\data\\FSD\\export\\ballistic",
+    "seed": 188881,
+    "constants": {
+        "scene_class": "Ballistic",
+        "sim_params": {
+            "Nx": 256,
+            "Ny": 184,
+            "Nz": 256,
+            "fx": 0.0,
+            "fy": 0.0,
+            "fz": -0.0002,
+            "alpha": 0.0,
+            "beta": 0.0,
+            "P_n": 3000,
+            "P_rho": 1.0,
+            "sigma": 0.00001
+        },
+        "graphics": {
+            "skybox": ".\\assets\\hdri\\spree_bank.png"
+        },
+        "export": {
+            "geometry": "particles",
+            "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
+            "make_video_script": ".\\script\\make_video.py",
+            "cameras": {
+                "width": 1080,
+                "height": 720,
+                "fov": 100.0,
+                "positions": [
+                    [-42.09743717, 45.51026209,-95.49428007]
+                ],
+                "rotations": [
+                    [222.76912712,152.33070927]
+                ],
+                "zoom": [
+                    250.0
+                ]
+            },
+            "fps": 50,
+            "simulation_steps": 250,
+            "update_dt": 20,
+            "video_seconds": 5.0
+        }
+    },
+    "variables": {
+        "sim_params": {
+            "v_init": [
+                {
+                    "type": "normal",
+                    "mean": 0.0,
+                    "std": 0.02,
+                    "nsamples": 4
+                },
+                {
+                    "type": "collection",
+                    "values": [0.15]
+                },
+                {
+                    "type": "normal",
+                    "mean": 0.0,
+                    "std": 0.02,
+                    "nsamples": 4
+                }
+            ],
+            "nu": {
+                "type": "collection",
+                "values": [0.005, 0.05, 0.025]
+            }
+        },
+        "fluids": [
+            {
+                "type": "sphere",
+                "N": [256, 256, 256],
+                "center_range": [
+                    [96, 160], [64, 128], [96, 184]
+                ],
+                "rad_range": [10, 20],
+                "on_ground": false,
+                "inside": true,
+                "nsamples": 8
+            }
+        ]
+    }
+}

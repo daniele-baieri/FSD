@@ -3,9 +3,6 @@ import vedo
 import pathlib
 import struct
 import numpy as np
-import msgpack
-import msgpack_numpy
-msgpack_numpy.patch()
 
 
 

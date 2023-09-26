@@ -21,7 +21,8 @@ void DamBreak::config_fluid_bodies(const nlohmann::json &config) {
 
 bool DamBreak::is_fluid(uint x, uint y, uint z) const {
     float3 rotated = dam_rotate * float3(x, y, z);
-    return cuboid(floor(rotated.x), floor(rotated.y), floor(rotated.z), dam_center, dam_sides);
+    return cuboid(floor(rotated.x), floor(rotated.y), floor(rotated.z), dam_center, dam_sides) &&
+        !(is_static(x, y, z) || is_boundary(x, y, z));
 }
 
 

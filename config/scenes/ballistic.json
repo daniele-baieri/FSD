@@ -40,10 +40,10 @@
                 150.0, 150.0
             ]
         },
-        "fps": 30,
-        "simulation_steps": 90,
-        "update_dt": 30,
-        "video_seconds": 3
+        "fps": 50,
+        "simulation_steps": 500,
+        "update_dt": 20,
+        "video_seconds": 10.0
     },
     "obstacles": [
         {
