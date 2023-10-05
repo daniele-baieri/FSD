@@ -2,7 +2,9 @@ import sys
 import vedo
 import pathlib
 import struct
+import time
 import numpy as np
+from tqdm import tqdm
 
 
 
@@ -43,19 +45,32 @@ def load_particles(path):
 
 if __name__ == "__main__":
 
-    fluid_type = sys.argv[1]
     path = pathlib.Path(sys.argv[2])
 
-    if fluid_type == 'density':
-        vol = load_phi(path)
-        vol = vedo.Volume(vol, c=['white','b','g','r'], mode=1)
-        plt = vedo.applications.IsosurfaceBrowser(vol, use_gpu=True, c='gold')
-        plt.show(axes=7, bg2='lb').close()
-    elif fluid_type == 'particles':
-        pos, vel, nu, m = load_particles(path)
-        p_view = vedo.Points(pos)
-        vel = vedo.Arrows(pos, pos + vel)
-        vedo.show(p_view, vel, bg2='lb')
-    else:
-        print("Unknown fluid type: {}".format(fluid_type))
-        sys.exit(1)
+    fluid_type = sys.argv[1]
+    sim = pathlib.Path(sys.argv[2])
+    fps = 50
+    plt = vedo.Plotter(bg2='lb', interactive=False, size=(1280, 768), 
+                        axes=dict(
+                            xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1),
+                            xygrid=True, yzgrid=True, zxgrid=True
+                        )
+                       )
+
+    first = True
+    for frame in tqdm((sim / 'frames').iterdir()):
+    
+        if fluid_type == 'particles':
+            pos, vel, nu, m = load_particles(frame)
+            v_view = vedo.Arrows(pos, pos + vel)
+            if first:
+                first = False
+                p_view = vedo.Points(pos)
+                plt.show(p_view, v_view, viewup='z')
+            else:
+                plt.show(v_view, resetcam=False)
+                p_view.points(pos)
+            plt.render(resetcam=False)
+            plt.remove(v_view)
+
+        time.sleep(1/fps)

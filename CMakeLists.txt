@@ -23,10 +23,8 @@ include_directories("${CMAKE_SOURCE_DIR}/include")
 set(SIM_SRC 
     "src/simulate_scene.cpp" 
     "src/dataset_scene.cpp" 
-    "src/dam_break.cpp" 
     "src/droplets.cpp" 
     "src/ballistic.cpp" 
-    "src/ball_drop.cpp"
     "src/nerf_scene.cpp"
     )
 

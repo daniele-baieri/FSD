@@ -2,7 +2,7 @@
     "graphics": {
         "skybox": ".\\assets\\hdri\\netball_court.png"
     },
-    "scene_class": "DamBreak",
+    "scene_class": "DatasetScene",
     "export": {
         "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
@@ -48,6 +48,7 @@
     },
     "obstacles": [
         {
+            "type": "mesh",
             "mesh_path": ".\\assets\\stl\\ship.stl",
             "center": [128.0, 128.0, 64.0],
             "rotation": [0.0, 0.0, 90.0],
@@ -57,6 +58,7 @@
     ],
     "fluids": [
         {
+            "type": "cuboid",
             "center": [64.0, 128.0, 64.0],
             "sides": [32.0, 256.0, 128.0],
             "rotation": [0.0, 0.0, 0.0]

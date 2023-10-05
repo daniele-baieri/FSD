@@ -10,11 +10,11 @@ import numpy as np
 if __name__ == "__main__":
 
     N = 10
-    cam_dist = 70.0
-    center = [0.0, 0.0, -128.0]
+    cam_dist = 384.0  # 70.0
+    center = [0.0, 0.0, 0.0]
     bb = [-128.0, 128.0]
     min_z_offset = 25.0
-    np.random.seed(101)
+    np.random.seed(107001)
 
 
     c = np.array(center)

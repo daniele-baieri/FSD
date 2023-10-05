@@ -11,10 +11,8 @@
 const std::map<std::string, std::function<fx3d::Scene*()>> SceneTypeMap {
     {"Scene", [](){return new fx3d::Scene();}},
     {"DatasetScene", [](){return new DatasetScene();}},
-    {"DamBreak", [](){return new DamBreak();}},
     {"Droplets", [](){return new Droplets();}},
     {"Ballistic", [](){return new Ballistic();}},
-    {"BallDrop", [](){return new BallDrop();}},
     {"NeRFScene", [](){return new NeRFScene();}}
 };
 

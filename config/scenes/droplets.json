@@ -50,10 +50,12 @@
     },
     "fluids": [
         {
+            "type": "sphere",
             "center": [128.0, 118.0, 64.0],
             "radius": 32
         },
         {
+            "type": "sphere",
             "center": [158.0, 168.0, 64.0],
             "radius": 12
         }

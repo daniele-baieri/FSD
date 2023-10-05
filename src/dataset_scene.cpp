@@ -66,6 +66,34 @@ void DatasetScene::config_export(const nlohmann::json &config) {
     }
 }
 
+void DatasetScene::config_sim_params(const nlohmann::json &config) {
+    if (config.contains("sim_params")) {
+        auto params = config["sim_params"];
+        if (params.contains("v_init")) {
+            std::vector<float> v_init_ = params["v_init"];
+            v_init = float3(v_init_[0], v_init_[1], v_init_[2]);
+        }
+    }
+    fx3d::Scene::config_sim_params(config);
+}
+
+void DatasetScene::custom_grid_initialization() {
+    fx3d::Scene::custom_grid_initialization();
+    uint Nx = lbm->get_Nx(), Ny = lbm->get_Ny(), Nz = lbm->get_Nz();
+    uint x, y, z; 
+    for(ulong n=0ull; n<lbm->get_N(); n++) { 
+        lbm->coordinates(n, x, y, z);
+		if (is_fluid(x, y, z)) {
+			lbm->u.x[n] = v_init.x;
+            lbm->u.y[n] = v_init.y;
+            lbm->u.z[n] = v_init.z;
+		}
+	}
+}
+
+
+
+
 void DatasetScene::switch_ith_camera(const uint i) const {
     Camera& cam = fx3d::GraphicsSettings::GetCamera();
     cam.pos = cam_pos[i];

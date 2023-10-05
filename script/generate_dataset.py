@@ -6,10 +6,13 @@ import itertools
 import subprocess
 import numpy as np
 from hashlib import shake_256
+from tqdm import tqdm
 
 
 
 SIMULATE_EXEC = "./bin/SimulateScene.exe"
+
+VARS_NEED_TYPE = {'mesh', 'cuboid', 'sphere'}
 
 
 class Cuboid:
@@ -169,7 +172,10 @@ def variable_sampling(var_block, var_path=""):
         var_block = {str(i):var_block[i] for i in range(len(var_block))}
     if "type" in var_block.keys():
         sampler = var_to_sampler[var_block["type"]]
-        params = {k:var_block[k] for k in var_block.keys() if k != "type"}
+        params = {
+            k:var_block[k] for k in var_block.keys() 
+            if k != "type" and var_block[k] not in VARS_NEED_TYPE  # type attribute needs to be copied for these var types
+        }
         values = sampler(**params)
         return [values], [var_path]
     else:
@@ -190,23 +196,32 @@ def make_scenes(config, root):
     var_block = config["variables"]
     var_values, var_paths = variable_sampling(var_block)
 
-    for combination in itertools.product(*var_values):
+    if 'num_scenes' in config.keys():
+        scenes = list(itertools.product(*var_values))
+        idxs = np.random.choice(len(scenes), config['num_scenes'], replace=False)
+        scenes = [scenes[i] for i in idxs]
+    else:
+        scenes = itertools.product(*var_values)
+
+    out = []
+    for combination in scenes:
         out_json = copy.deepcopy(const_block)
-        scene_folder = root / shake_256("".join([str(x) for x in combination]).encode('utf-8')).hexdigest(16)
+        name = shake_256("".join([str(x) for x in combination]).encode('utf-8')).hexdigest(16)
+        scene_folder = root / name
+        out.append(name)
         scene_folder.mkdir(exist_ok=True)
         for i, name in enumerate(var_paths):
             val = to_json_variable(combination[i])
             json_insert(out_json, val, name)
         out_json["export"]["out_dir"] = str(scene_folder.absolute())
         json.dump(out_json, open(scene_folder / 'config.json', 'w'), indent=4)
+    return out
 
 
-def generate(root, stdout):
-    for sim_dir in root.iterdir():
-        if sim_dir.name == 'log.txt':
-            continue
+def generate(root, sim_names, stdout):
+    for sim_dir in tqdm(sim_names, desc='Simulating scenes...'):
         print("Simulating scene: {}".format(str(sim_dir)))
-        command = "{} {}".format(SIMULATE_EXEC, str(sim_dir / "config.json"))
+        command = "{} {}".format(SIMULATE_EXEC, str(root / sim_dir / "config.json"))
         subprocess.call(command, stdout=stdout)
 
 
@@ -221,7 +236,7 @@ if __name__ == "__main__":
 
     if "seed" in config.keys():
         np.random.seed(config["seed"])
-    make_scenes(config, root_path)
+    sims = make_scenes(config, root_path)
 
     log_path = root_path / "log.txt"
     log_path.touch(exist_ok=True)
@@ -229,4 +244,4 @@ if __name__ == "__main__":
 
     print("Simulating generated scenes...")
 
-    generate(root_path, log)
+    generate(root_path, sims, log)

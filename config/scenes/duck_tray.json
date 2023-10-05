@@ -49,6 +49,7 @@
     },
     "obstacles": [
         {
+            "type": "mesh",
             "mesh_path": ".\\assets\\stl\\tray.stl",
             "center": [128.0, 128.0, 50.0],
             "rotation": [90.0, 0.0, 0.0],
@@ -58,6 +59,7 @@
     ],
     "fluids": [
         {
+            "type": "mesh",
             "mesh_path": ".\\assets\\stl\\duck.stl",
             "center": [128.0, 128.0, 160.0],
             "rotation": [90.0, 0.0, 0.0],

@@ -1,5 +1,6 @@
 {
     "export_root": "D:\\data\\FSD\\export\\ballistic",
+    "num_scenes": 400,
     "seed": 188881,
     "constants": {
         "scene_class": "Ballistic",
@@ -14,7 +15,8 @@
             "beta": 0.0,
             "P_n": 3000,
             "P_rho": 1.0,
-            "sigma": 0.00001
+            "sigma": 0.0001,
+            "nu": 0.005
         },
         "graphics": {
             "skybox": ".\\assets\\hdri\\spree_bank.png"
@@ -50,35 +52,33 @@
                     "type": "normal",
                     "mean": 0.0,
                     "std": 0.02,
-                    "nsamples": 4
+                    "nsamples": 10
                 },
                 {
-                    "type": "collection",
-                    "values": [0.15]
+                    "type": "uniform",
+                    "lo": 0.10,
+                    "hi": 0.15,
+                    "nsamples": 10
                 },
                 {
                     "type": "normal",
                     "mean": 0.0,
                     "std": 0.02,
-                    "nsamples": 4
+                    "nsamples": 10
                 }
-            ],
-            "nu": {
-                "type": "collection",
-                "values": [0.005, 0.05, 0.025]
-            }
+            ]
         },
         "fluids": [
             {
                 "type": "sphere",
-                "N": [256, 256, 256],
+                "N": [256, 184, 256],
                 "center_range": [
-                    [96, 160], [64, 128], [96, 184]
+                    [96, 160], [64, 64], [96, 160]
                 ],
-                "rad_range": [10, 20],
+                "rad_range": [20, 30],
                 "on_ground": false,
                 "inside": true,
-                "nsamples": 8
+                "nsamples": 10
             }
         ]
     }

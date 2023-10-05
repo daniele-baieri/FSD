@@ -9,8 +9,8 @@
         "fz": -0.0002,
         "alpha": 0.0,
         "beta": 0.0,
-        "P_n": 0,
-        "P_rho": 0.0,
+        "P_n": 10000,
+        "P_rho": 1.0,
         "nu": 0.005,
         "sigma": 0.001,
         "v_init": [0.0, 0.3, 0.0]
@@ -20,6 +20,7 @@
         "skybox": ".\\assets\\hdri\\pine_attic.png"
     },
     "export": {
+        "geometry": "particles",
         "out_dir": ".\\export\\test-nerf_ball",
         "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
@@ -63,6 +64,7 @@
     "obstacles": [],
     "fluids": [
         {
+            "type": "mesh",
             "mesh_path": ".\\assets\\stl\\baseball.stl",
             "center": [128.0, 128.0, 20.0],
             "rotation": [90.0, 0.0, 0.0],

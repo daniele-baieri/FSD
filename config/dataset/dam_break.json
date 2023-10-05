@@ -2,7 +2,7 @@
     "export_root": "D:\\data\\FSD\\export\\dam-break",
     "seed": 188881,
     "constants": {
-        "scene_class": "DamBreak",
+        "scene_class": "DatasetScene",
         "sim_params": {
             "Nx": 256,
             "Ny": 256,

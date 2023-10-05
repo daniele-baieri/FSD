@@ -31,32 +31,12 @@ void NeRFScene::postprocess() {
     for (uint i = 0; i < n_views; i++) {
         switch_ith_camera(i);
         Rt = {  // column major
-            {main_cam.R.xx, main_cam.R.yx, main_cam.R.zx}, 
-            {main_cam.R.xy, main_cam.R.yy, main_cam.R.zy}, 
-            {main_cam.R.xz, main_cam.R.yz, main_cam.R.zz}, 
-            {main_cam.pos.x / Nf.x - 1.0f, main_cam.pos.y / Nf.y - 1.0f, main_cam.pos.z / Nf.z - 1.0f}
+            {main_cam.R.xx, main_cam.R.xy, main_cam.R.xz, cam_pos[i].x / Nf.x},
+            {main_cam.R.yx, main_cam.R.yy, main_cam.R.yz, cam_pos[i].y / Nf.y}, 
+            {main_cam.R.zx, main_cam.R.zy, main_cam.R.zz, cam_pos[i].z / Nf.z}, 
         };
 
-        camera_params["c2w"] = {
-            {   
-                K[0][0] * Rt[0][0] + K[0][1] * Rt[0][1] + K[0][2] * Rt[0][2],
-                K[0][0] * Rt[1][0] + K[0][1] * Rt[1][1] + K[0][2] * Rt[1][2],
-                K[0][0] * Rt[2][0] + K[0][1] * Rt[2][1] + K[0][2] * Rt[2][2],
-                K[0][0] * Rt[3][0] + K[0][1] * Rt[3][1] + K[0][2] * Rt[3][2]
-            },
-            {
-                K[1][0] * Rt[0][0] + K[1][1] * Rt[0][1] + K[1][2] * Rt[0][2],
-                K[1][0] * Rt[1][0] + K[1][1] * Rt[1][1] + K[1][2] * Rt[1][2],
-                K[1][0] * Rt[2][0] + K[1][1] * Rt[2][1] + K[1][2] * Rt[2][2],
-                K[1][0] * Rt[3][0] + K[1][1] * Rt[3][1] + K[1][2] * Rt[3][2]
-            },
-            {
-                K[2][0] * Rt[0][0] + K[2][1] * Rt[0][1] + K[2][2] * Rt[0][2],
-                K[2][0] * Rt[1][0] + K[2][1] * Rt[1][1] + K[2][2] * Rt[1][2],
-                K[2][0] * Rt[2][0] + K[2][1] * Rt[2][1] + K[2][2] * Rt[2][2],
-                K[2][0] * Rt[3][0] + K[2][1] * Rt[3][1] + K[2][2] * Rt[3][2]
-            }
-        };
+        camera_params["Rt"] = Rt;
 
         params_file.open(get_ith_out_dir(i) + "/params.json");
         params_file << camera_params.dump(4) << std::endl;
@@ -70,5 +50,7 @@ void NeRFScene::postprocess() {
 
 
 bool NeRFScene::is_boundary(uint x, uint y, uint z) const {
-    return z <= 2 && x >= 80 && x <= 176 && y >= 80 && y <= 176;
+    // return z <= 2 && x >= 70 && x <= 186 && y >= 70 && y <= 186;               // ball
+    // return z <= 2 && x >= 80 && x <= 176 && y >= 80 && y <= 176;               // duck, droplets
+    return z <= 2 || x == 255 || x == 0 || y == 255 || y == 0 || z == 255;     // ship, dam
 }
