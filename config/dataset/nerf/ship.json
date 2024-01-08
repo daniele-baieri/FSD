@@ -17,16 +17,16 @@
     },
     "graphics": {
         "matte_fluid": false,
-        "skybox": ".\\assets\\hdri\\spree_bank.png"
+        "skybox": ".\\assets\\hdri\\netball_court.png"
     },
     "export": {
-        "geometry": "particles",
+        "geometry": "density",
         "out_dir": ".\\export\\nerf-dataset\\ship",
         "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
         "cameras": {
-            "width": 800,
-            "height": 800,
+            "width": 1080,
+            "height": 1080,
             "fov": 50.0,
             "positions": [
                 [  36.49829759,-343.36478817,  40.00147772],

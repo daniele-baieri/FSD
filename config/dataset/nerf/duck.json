@@ -15,17 +15,17 @@
         "sigma": 0.0001
     },
     "graphics": {
-        "matte_fluid": true,
+        "matte_fluid": false,
         "skybox": ".\\assets\\hdri\\spree_bank.png"
     },
     "export": {
-        "geometry": "particles",
+        "geometry": "density",
         "out_dir": ".\\export\\nerf-dataset\\duck",
         "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
         "cameras": {
-            "width": 800,
-            "height": 800,
+            "width": 1080,
+            "height": 1080,
             "fov": 20.0,
             "positions": [
                 [-310.26634706, -32.08209629,  95.96770521],

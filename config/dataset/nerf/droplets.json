@@ -1,17 +1,17 @@
 {
     "graphics": {
-        "matte_fluid": true,
-        "skybox": ".\\assets\\hdri\\netball_court.png"
+        "matte_fluid": false,
+        "skybox": ".\\assets\\hdri\\pine_attic.png"
     },
     "scene_class": "Droplets",
     "export": {
-        "geometry": "particles",
+        "geometry": "density",
         "python_exec": "C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe",
         "make_video_script": ".\\script\\make_video.py",
         "out_dir": ".\\export\\nerf-dataset\\droplets",
         "cameras": {
-            "width": 800,
-            "height": 800,
+            "width": 1080,
+            "height": 1080,
             "fov": 30.0,
             "positions": [
                 [-130.58511555,-335.85095762, 132.69386519],

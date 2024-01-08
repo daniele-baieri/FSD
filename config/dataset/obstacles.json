@@ -1,5 +1,6 @@
 {
-    "export_root": "D:\\data\\FSD\\export\\dam-break",
+    "export_root": "D:\\data\\FSD\\export\\obstacles",
+    "num_scenes": 400,
     "seed": 188881,
     "constants": {
         "scene_class": "DatasetScene",
@@ -9,13 +10,12 @@
             "Nz": 256,
             "fx": 0.0,
             "fy": 0.0,
-            "fz": -0.0002,
+            "fz": -0.0001,
             "alpha": 0.0,
             "beta": 0.0,
-            "P_n": 5000,
+            "P_n": 3000,
             "P_rho": 1.0,
-            "nu": 0.005,
-            "sigma": 0.0001
+            "sigma": 0.0005
         },
         "graphics": {
             "skybox": ".\\assets\\hdri\\netball_court.png"
@@ -39,27 +39,53 @@
                 ]
             },
             "fps": 50,
-            "simulation_steps": 500,
+            "simulation_steps": 250,
             "update_dt": 20,
-            "video_seconds": 10.1
+            "video_seconds": 5.0
         }
     },
     "variables": {
+        "sim_params": {
+            "nu": {
+                "type": "uniform",
+                "hi": 0.01,
+                "lo": 0.0001,
+                "nsamples": 100
+            }
+        },
         "fluids": [
             {
-                "type": "cuboid",
+                "type": "sphere",
                 "N": [256, 256, 256],
                 "center_range": [
-                    [15, 235], [128, 128], [20, 80]
+                    [128, 128], [128, 128], [153, 240]
                 ],
-                "sides_range": [
-                    [30, 128], [254, 254], [30, 200]
+                "rad_range": [20, 40],
+                "on_ground": false,
+                "inside": true,
+                "nsamples": 100
+            }
+        ],
+        "obstacles": [
+            {
+                "type": "mesh",
+                "N": [256, 256, 256],
+                "assets": [
+                    ".\\assets\\stl\\baseball.stl",
+                    ".\\assets\\stl\\cube.stl",
+                    ".\\assets\\stl\\bust.stl",
+                    ".\\assets\\stl\\duck.stl",
+                    ".\\assets\\stl\\ship.stl"
+                ],
+                "center_range": [
+                    [128, 128], [128, 128], [45, 60]
                 ],
                 "rot_range": [
-                    [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]
+                    [90.0, 90.0], [0.0, 0.0], [0.0, 90.0]
                 ],
-                "on_ground": true,
-                "nsamples": 200
+                "size_range": [70, 120],
+                "inside": true,
+                "nsamples": 1000
             }
         ]
     }

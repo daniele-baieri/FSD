@@ -1,5 +1,6 @@
 import sys
 import vedo
+import argparse
 import pathlib
 import struct
 import time
@@ -45,11 +46,19 @@ def load_particles(path):
 
 if __name__ == "__main__":
 
-    path = pathlib.Path(sys.argv[2])
+    parser = argparse.ArgumentParser(
+        prog='Fluid State Loader',
+        description='Loads and visualizes simulation states for a given \
+            simulated scene, using the v3do plotting library.'
+    )
+    parser.add_argument('root')
+    parser.add_argument('-f', '--fps', default=50)
+    parser.add_argument('-t', '--fluid_type', choices=['particles', 'density'])
+    args = parser.parse_args(sys.argv)
 
-    fluid_type = sys.argv[1]
-    sim = pathlib.Path(sys.argv[2])
-    fps = 50
+    sim = pathlib.Path(args.root)
+    fluid_type = args.fluid_type
+    fps = args.fps
     plt = vedo.Plotter(bg2='lb', interactive=False, size=(1280, 768), 
                         axes=dict(
                             xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1),

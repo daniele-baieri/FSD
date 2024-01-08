@@ -1,6 +1,8 @@
 import sys
+import argparse
 import json
 import pathlib
+import trimesh
 import msgpack
 import msgpack_numpy
 msgpack_numpy.patch()
@@ -41,15 +43,36 @@ def make_box(nx, ny, nz, box_face_pts):
     ], axis=0)
     return xyz, normals
 
+def load_boundary_meshes(bmesh_dir, num_pts_sample):
+    xyz, normals = [], []
+    for bmesh_file in bmesh_dir.iterdir():
+        bmesh = trimesh.load(bmesh_file, file_type='stl', force='mesh')
+        sample_xyz, face_idx = bmesh.sample(num_pts_sample, return_index=True)
+        sample_normals = bmesh.face_normals[face_idx]
+        xyz.append(sample_xyz)
+        normals.append(sample_normals)
+    return np.concatenate(xyz, axis=0), np.concatenate(normals, axis=0)
+
 
 
 if __name__ == "__main__":
 
-    root = pathlib.Path(sys.argv[1])
+    parser = argparse.ArgumentParser(
+        prog='MSGPack Converter',
+        description='Converts a generated dataset to MSGPack format.'
+    )
+    parser.add_argument('root')
+    parser.add_argument('-f', '--fps', default=50)
+    parser.add_argument('-b', '--box_face_pts', default=6500)
+    parser.add_argument('-p', '--pts_per_boundary', default=3000)
+    args = parser.parse_args()
+
+    root = pathlib.Path(args.root)
     out_dir = root / 'msgpack'
     out_dir.mkdir(parents=True, exist_ok=True)
-    fps = 50
-    box_face_pts = 6500
+    fps = args.fps
+    box_face_pts = args.box_face_pts
+    pts_per_boundary = args.pts_per_boundary
     compressor = zstd.ZstdCompressor(level=22)
 
     for i, sim in tqdm(enumerate(root.iterdir())):
@@ -61,7 +84,10 @@ if __name__ == "__main__":
         current_second = []
 
         Nx, Ny, Nz = config['sim_params']['Nx'], config['sim_params']['Ny'], config['sim_params']['Nz']
-        xyz, normals = make_box(Nx, Ny, Nz, box_face_pts)
+        xyz_box, normals_box = make_box(Nx, Ny, Nz, box_face_pts)
+        xyz_bmesh, normals_bmesh = load_boundary_meshes(sim / 'boundary_mesh', pts_per_boundary)
+        xyz = np.concatenate((xyz_box, xyz_bmesh), axis=0)
+        normals = np.concatenate((normals_box, normals_bmesh), axis=0)
 
         frames = sim / 'frames'
         for j, frame in enumerate(frames.iterdir()):

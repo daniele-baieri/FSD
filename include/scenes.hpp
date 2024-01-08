@@ -37,7 +37,9 @@ protected:
 
     /* Geometry output */
     std::string geometry_out_dir() const;
+    std::string boundary_out_dir() const;
     void export_geometry() const;
+    void export_boundary_meshes() const;
 
     virtual void config_sim_params(const nlohmann::json &config);
     virtual void config_export(const nlohmann::json &config) override;

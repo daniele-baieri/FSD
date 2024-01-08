@@ -64,6 +64,11 @@ void DatasetScene::config_export(const nlohmann::json &config) {
 	if (!std::filesystem::exists(geometry_out)) {
 		std::filesystem::create_directories(geometry_out);
     }
+
+    std::string boundary_out = boundary_out_dir();
+	if (!std::filesystem::exists(boundary_out)) {
+		std::filesystem::create_directories(boundary_out);
+    }
 }
 
 void DatasetScene::config_sim_params(const nlohmann::json &config) {
@@ -117,12 +122,25 @@ std::string DatasetScene::geometry_out_dir() const {
     return (out_dir_path / "frames").string();
 }
 
+std::string DatasetScene::boundary_out_dir() const {
+    return (out_dir_path / "boundary_mesh").string();
+}
+
 void DatasetScene::export_geometry() const {
     std::string geometry_out = geometry_out_dir();
     if (geometry_exp == ExportType::DENSITY) {
         lbm->phi.write_device_to_sparse(geometry_out);
     } else if (geometry_exp == ExportType::PARTICLES) {
         lbm->write_particles(fx3d::default_filename(geometry_out, "particles", ".dat", lbm->get_t()));
+    }
+}
+
+void DatasetScene::export_boundary_meshes() const {
+    std::string boundary_out = boundary_out_dir();
+    std::string fname;
+    for (uint i = 0; i < mesh_obst.size(); i++) {
+        fname = fx3d::default_filename(boundary_out, "mesh", ".stl", i);
+        write_stl(fname, mesh_obst[i]);
     }
 }
 
@@ -140,6 +158,7 @@ void DatasetScene::postprocess() {
     for (uint i = 0; i < n_views; i++) {
         make_ith_video(i);
     }
+    export_boundary_meshes();
 }
 
 void DatasetScene::enable_features() {

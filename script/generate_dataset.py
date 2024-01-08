@@ -12,10 +12,12 @@ from tqdm import tqdm
 
 SIMULATE_EXEC = "./bin/SimulateScene.exe"
 
-VARS_NEED_TYPE = {'mesh', 'cuboid', 'sphere'}
+# VARS_NEED_TYPE = {'mesh', 'cuboid', 'sphere'}
 
 
 class Cuboid:
+
+    type = 'cuboid'
 
     def __init__(self, center, sides, rotation):
         self.center = np.floor(center)
@@ -27,13 +29,15 @@ class Cuboid:
 
     def to_dict(self):
         return {
+            'type': Cuboid.type,
             'center': [float(self.center[0]), float(self.center[1]), float(self.center[2])],
             'sides': [float(self.sides[0]), float(self.sides[1]), float(self.sides[2])],
             'rotation': [float(self.rotation[0]), float(self.rotation[1]), float(self.rotation[2])]
         }
 
-
 class Sphere:
+
+    type = 'sphere'
 
     def __init__(self, center, radius):
         self.center = np.floor(center)
@@ -44,10 +48,33 @@ class Sphere:
 
     def to_dict(self):
         return {
+            'type': Sphere.type,
             'center': [float(self.center[0]), float(self.center[1]), float(self.center[2])],
             'radius': float(self.radius)
         }
 
+class Mesh:
+
+    type = 'mesh'
+
+    def __init__(self, asset, center, rot, size):
+        self.asset = asset
+        self.center = np.floor(center)
+        self.rot = rot
+        self.size = size
+
+    def __str__(self):
+        return str([self.center, self.rot, self.asset, self.size])
+
+    def to_dict(self):
+        return {
+            'type': Mesh.type,
+            'mesh_path': self.asset,
+            'center': [float(self.center[0]), float(self.center[1]), float(self.center[2])],
+            'rotation': [float(self.rot[0]), float(self.rot[1]), float(self.rot[2])],
+            'scale': [1.0, 1.0, 1.0],
+            'size': self.size
+        }
 
 
 def sample_collection(values):
@@ -89,7 +116,6 @@ def sample_cuboid(N, center_range, sides_range, rot_range, on_ground, nsamples):
     out = [Cuboid((cx[i], cy[i], cz[i]), (sx[i], sy[i], sz[i]), (rx[i], ry[i], rz[i])) for i in range(nsamples)]
     return out
     
-
 def sample_sphere(N, center_range, rad_range, on_ground, inside, nsamples):
 
     cx = np.random.uniform(
@@ -123,13 +149,47 @@ def sample_sphere(N, center_range, rad_range, on_ground, inside, nsamples):
     out = [Sphere((cx[i], cy[i], cz[i]), rad[i]) for i in range(nsamples)]
     return out
 
+def sample_mesh(N, assets, center_range, rot_range, size_range, inside, nsamples):
+
+    out = []
+    stl_files = np.random.choice(assets, size=(nsamples,), replace=True)
+
+    cx = np.random.uniform(
+        center_range[0][0] if not inside else max(center_range[0][0], size_range[1] // 2), 
+        center_range[0][1] if not inside else min(center_range[0][1], N[0] - (size_range[1] // 2)), 
+        (nsamples,)
+    )
+    cy = np.random.uniform(
+        center_range[1][0] if not inside else max(center_range[1][0], size_range[1] // 2), 
+        center_range[1][1] if not inside else min(center_range[1][1], N[1] - (size_range[1] // 2)), 
+        (nsamples,)
+    )
+    cz = np.random.uniform(
+        center_range[2][0] if not inside else max(center_range[2][0], size_range[1] // 2), 
+        center_range[2][1] if not inside else min(center_range[2][1], N[2] - (size_range[1] // 2)), 
+        (nsamples,)
+    )
+
+    rx = np.random.uniform(rot_range[0][0], rot_range[0][1], (nsamples,))
+    ry = np.random.uniform(rot_range[1][0], rot_range[1][1], (nsamples,))
+    rz = np.random.uniform(rot_range[2][0], rot_range[2][1], (nsamples,))
+
+    size = np.random.uniform(size_range[0], size_range[1], (nsamples,))
+
+    out = [
+        Mesh(stl_files[i], (cx[i], cy[i], cz[i]), (rx[i], ry[i], rz[i]), size[i])
+        for i in range(nsamples)
+    ]
+    return out
+
 var_to_sampler = {
     'linscale': sample_linscale,
     'uniform': sample_uniform,
     'normal': sample_normal,
     'collection': sample_collection,
     'cuboid': sample_cuboid,
-    'sphere': sample_sphere
+    'sphere': sample_sphere,
+    'mesh': sample_mesh
 }
 
 
@@ -174,7 +234,7 @@ def variable_sampling(var_block, var_path=""):
         sampler = var_to_sampler[var_block["type"]]
         params = {
             k:var_block[k] for k in var_block.keys() 
-            if k != "type" and var_block[k] not in VARS_NEED_TYPE  # type attribute needs to be copied for these var types
+            if k != "type" # or var_block[k] in VARS_NEED_TYPE  # type attribute needs to be copied for these var types
         }
         values = sampler(**params)
         return [values], [var_path]
