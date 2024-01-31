@@ -57,7 +57,15 @@ void DatasetScene::config_export(const nlohmann::json &config) {
             }
         }
 	}
+
     fx3d::Scene::config_export(config);
+    if (config.contains("export")) {
+        const float dt = units.si_t(1.0);
+        const uint steps_per_sec = ceil(1.0 / dt);
+        update_dt = ceil(float(steps_per_sec) / float(fps));
+        std::cout << "lbm steps per output frame = " << update_dt << std::endl;
+    }
+
     out_dir_path = get_out_dir();
     
     std::string geometry_out = geometry_out_dir();
@@ -82,6 +90,32 @@ void DatasetScene::config_sim_params(const nlohmann::json &config) {
     fx3d::Scene::config_sim_params(config);
 }
 
+void DatasetScene::config_units(const nlohmann::json &config) {
+    fx3d::Scene::config_units(config);
+    const float lbm_d = max(Nx, max(Ny, Nz));
+	// const float si_nu = 1E-6f; // kinematic shear viscosity (water) [m^2/s]
+	const float si_rho = 1E3f; // density (water) [kg/m^3]
+	const float si_sigma = 0.072f; // surface tension (water) [kg/s^2]
+    const float si_d = 2.0f; // Size of the domain [m]
+	const float si_g = 9.81f; // gravitational acceleration [m/s^2]
+	const float si_f = units.si_f_from_si_g(si_g, si_rho);
+	const float lbm_rho = 1.0f;  // avg density always 1 in LBM
+	const float m = si_d/lbm_d; // length si_x = x*[m]
+	const float kg = si_rho/lbm_rho*cb(m); // density si_rho = rho*[kg/m^3]
+	const float s = sqrt(sigma/si_sigma*kg); // velocity si_sigma = sigma*[kg/s^2]
+	units.set_m_kg_s(m, kg, s); // do unit conversion manually via d, rho and sigma
+    std::cout << "f = " << -units.f(si_f) << std::endl;
+    std::cout << "nu = " << units.nu(nu) << std::endl;
+    std::cout << "m = " << units.si_x(1.0f) << std::endl;
+    std::cout << "kg = " << units.si_M(1.0f) << std::endl;
+    std::cout << "s = " << units.si_t(1.0f) << std::endl;
+    std::cout << "sigma = " << units.si_sigma(sigma) << std::endl;
+
+    sigma = units.sigma(si_sigma);
+    fz = -units.f(si_f);
+    nu = units.nu(nu);
+}
+
 void DatasetScene::custom_grid_initialization() {
     fx3d::Scene::custom_grid_initialization();
     uint Nx = lbm->get_Nx(), Ny = lbm->get_Ny(), Nz = lbm->get_Nz();
@@ -89,9 +123,9 @@ void DatasetScene::custom_grid_initialization() {
     for(ulong n=0ull; n<lbm->get_N(); n++) { 
         lbm->coordinates(n, x, y, z);
 		if (is_fluid(x, y, z)) {
-			lbm->u.x[n] = v_init.x;
-            lbm->u.y[n] = v_init.y;
-            lbm->u.z[n] = v_init.z;
+			lbm->u.x[n] = units.u(v_init.x);
+            lbm->u.y[n] = units.u(v_init.y);
+            lbm->u.z[n] = units.u(v_init.z);
 		}
 	}
 }

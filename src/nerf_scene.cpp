@@ -50,8 +50,9 @@ void NeRFScene::postprocess() {
 
 
 bool NeRFScene::is_boundary(uint x, uint y, uint z) const {
+    return DatasetScene::is_boundary(x, y, z);
     // return z <= 2 && x >= 70 && x <= 186 && y >= 70 && y <= 186;            // ball
-    return z <= 2 && x >= 80 && x <= 176 && y >= 80 && y <= 176;            // duck
+    // return z <= 2 && x >= 80 && x <= 176 && y >= 80 && y <= 176;            // duck
     // return z <= 2 || x == 255 || x == 0 || y == 255 || y == 0 || z == 255;     // ship, dam
     // return false;                                                              // droplets
 }

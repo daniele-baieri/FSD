@@ -1,5 +1,6 @@
 {
     "export_root": "D:\\data\\FSD\\export\\dam-break",
+    "num_scenes": 200,
     "seed": 188881,
     "constants": {
         "scene_class": "DatasetScene",
@@ -14,8 +15,8 @@
             "beta": 0.0,
             "P_n": 5000,
             "P_rho": 1.0,
-            "nu": 0.005,
-            "sigma": 0.0001
+            "sigma": 0.00003,
+            "nu": 0.002
         },
         "graphics": {
             "skybox": ".\\assets\\hdri\\netball_court.png"
@@ -41,7 +42,7 @@
             "fps": 50,
             "simulation_steps": 500,
             "update_dt": 20,
-            "video_seconds": 10.1
+            "video_seconds": 10.0
         }
     },
     "variables": {

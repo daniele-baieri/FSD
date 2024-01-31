@@ -11,12 +11,12 @@
         "beta": 0.0,
         "P_n": 10000,
         "P_rho": 1.0,
-        "nu": 0.005,
-        "sigma": 0.001
+        "sigma": 0.0001,
+        "nu": 0.0005
     },
     "graphics": {
         "matte_fluid": false,
-        "skybox": ".\\assets\\hdri\\white.png"
+        "skybox": ".\\assets\\hdri\\pine_attic.png"
     },
     "export": {
         "geometry": "density",
@@ -55,8 +55,8 @@
                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
             ]
         },
-        "fps": 30,
-        "simulation_steps": 60,
+        "fps": 60,
+        "simulation_steps": 90,
         "update_dt": 30,
         "video_seconds": 2
     },

@@ -8,6 +8,12 @@ void Droplets::enable_features() {
     NeRFScene::enable_features();
 }
 
+
+void Droplets::config_units(const nlohmann::json &config) {
+    DatasetScene::config_units(config);
+    fz = 0.0f;
+}
+
 void Droplets::custom_grid_initialization() {
     DatasetScene::custom_grid_initialization();
     uint Nx = lbm->get_Nx(), Ny = lbm->get_Ny(), Nz = lbm->get_Nz();
@@ -15,17 +21,17 @@ void Droplets::custom_grid_initialization() {
     for(ulong n=0ull; n<lbm->get_N(); n++) { 
         lbm->coordinates(n, x, y, z);
 		if(sphere(x, y, z, sphere_fluid[0].center, sphere_fluid[0].radius)) {
-			lbm->u.x[n] = vsphere_1.x;  
-			lbm->u.y[n] = vsphere_1.y;  
-			lbm->u.z[n] = vsphere_1.z;  
+			lbm->u.x[n] = units.u(vsphere_1.x);  
+			lbm->u.y[n] = units.u(vsphere_1.y);  
+			lbm->u.z[n] = units.u(vsphere_1.z);  
 		} else if(sphere(x, y, z, sphere_fluid[1].center, sphere_fluid[1].radius)) {
-			lbm->u.x[n] = vsphere_2.x;  
-			lbm->u.y[n] = vsphere_2.y;  
-			lbm->u.z[n] = vsphere_2.z;  
+			lbm->u.x[n] = units.u(vsphere_2.x);  
+			lbm->u.y[n] = units.u(vsphere_2.y);  
+			lbm->u.z[n] = units.u(vsphere_2.z);  
 		}
-		lbm->F.x[n] = force_field_scale.x*lbm->relative_position(n).x;  
-		lbm->F.y[n] = force_field_scale.y*lbm->relative_position(n).y;  
-		lbm->F.z[n] = force_field_scale.z*lbm->relative_position(n).z;  
+		lbm->F.x[n] = units.F(force_field_scale.x*lbm->relative_position(n).x);  
+		lbm->F.y[n] = units.F(force_field_scale.y*lbm->relative_position(n).y);  
+		lbm->F.z[n] = units.F(force_field_scale.z*lbm->relative_position(n).z);  
 	}
 }
 

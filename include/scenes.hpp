@@ -42,6 +42,7 @@ protected:
     void export_boundary_meshes() const;
 
     virtual void config_sim_params(const nlohmann::json &config);
+    virtual void config_units(const nlohmann::json &config);
     virtual void config_export(const nlohmann::json &config) override;
     virtual void select_rendering_mode(const nlohmann::json &config);
 
@@ -103,6 +104,7 @@ private:
 protected:
 
     virtual void enable_features();
+    virtual void config_units(const nlohmann::json &config);
     virtual void config_sim_params(const nlohmann::json &config);
 
 public:
