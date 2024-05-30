@@ -5,7 +5,6 @@ import cv2
 
 if __name__ == "__main__":
 
-
     image_folder = sys.argv[1]
     fps = 50.0
     video_name = 'video.mp4'
@@ -23,3 +22,4 @@ if __name__ == "__main__":
 
     cv2.destroyAllWindows()
     video.release()
+    

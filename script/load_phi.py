@@ -1,5 +1,4 @@
 import sys
-import vedo
 import argparse
 import pathlib
 import struct
@@ -46,6 +45,8 @@ def load_particles(path):
 
 if __name__ == "__main__":
 
+    import vedo
+    
     parser = argparse.ArgumentParser(
         prog='Fluid State Loader',
         description='Loads and visualizes simulation states for a given \
