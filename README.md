@@ -83,152 +83,229 @@ Here we document how to define individual scenes and datasets. While we use yaml
 
 ### Scenes
 ```yaml
-scene_class: "NeRFScene"
+scene_class: # "Scene". See below for description.
 sim_params:
-    Nx: 256
-    Ny: 256
-    Nz: 256
-    fx: 0.0
-    fy: 0.0
-    fz: -0.0002
-    alpha: 0.0
-    beta: 0.0
-    P_n: 10000
-    P_rho: 1.0
-    sigma: 0.0001
-    nu: 0.0005
+    Nx:    # Lattice units in x dimension
+    Ny:    # Lattice units in y dimension
+    Nz:    # Lattice units in z dimension
+    fx:    # Global volume force in x dimension [LBM units]
+    fy:    # Global volume force in y dimension [LBM units]
+    fz:    # Global volume force in z dimension [LBM units]
+    alpha: # Thermal diffusion coefficient (average temperature is assumed 1.0)
+    beta:  # Thermal expansion coefficient (average temperature is assumed 1.0)
+    P_n:   # Number of particles to simulate (can be zero)
+    P_rho: # Particle density (generally leave to 1.0)
+    sigma: # Surface tension [LBM units]
+    nu:    # Viscosity [LBM units]
 graphics:
-    matte_fluid: false
-    skybox: .\\assets\\hdri\\pine_attic.png
+    matte_fluid: # Fluid appearence. true for matte, false for water
+    skybox:      # Path to a .png HDRI map
 export:
-    geometry: density
-    out_dir: .\\export\\nerf-dataset\\ball
-    python_exec: C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe
-    make_video_script: .\\script\\make_video.py
-    cameras: 
-        width: 1080
-        height: 1080
-        fov: 20.0
-        positions: [
-            [ 124.83288678,-331.81273504,  19.55696949],
-            [ 270.65258085, 243.20538312,  -5.30394423],
-            [ -91.8955154 ,-311.08510257,  77.51708739],
-            [-373.59328006, -55.66049398, -58.81929096],
-            [ 114.41983959, 174.66551027, 194.2670629 ],
-            [ 202.80417237,-163.03852772, 154.39140594],
-            [-116.66046666,-317.79705088,  53.24946888],
-            [ 261.88005629,-189.12782471,  79.61864569],
-            [-287.34387137,-168.49080936,  63.05063922],
-            [-129.12999863, 357.98791222, -76.75453039]
-        ]
-        rotations: [
-            [380.61704635,157.40200962],
-            [131.94251004,161.36604182],
-            [343.5426942 ,147.6424733 ],
-            [278.47398654,169.62103139],
-            [146.77200361,122.94034874],
-            [411.20346861,132.65945671],
-            [339.84226363,151.83555203],
-            [414.1634645 ,147.27049747],
-            [300.38622655,150.16343128],
-            [199.83490628,172.33089874]
-        ]
-        zoom: [
-            1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
-        ]
-    }
-    fps: 60
-    simulation_steps: 90
-    update_dt: 30
-    video_seconds: 
-obstacles: []
-fluids: [
-    {
-        type: sphere,
-        center: [128.0, 128.0, 30.0],
-        radius: 15.0
-    }
-]
+    out_dir:           # Output path for simulation
+    python_exec:       # Path to Python interpreter for external scripts invocation
+    make_video_script: # Script to convert frame renders to videos, generally leave as "./scripts/make_video.py"
+    fps:               # Frequency of exported frames
+    simulation_steps:  # Total number of output frames
+    update_dt:         # Number of LBM steps for an output frame
+    video_seconds:     # Total simulation time [s]
+obstacles: # A list of specifications for boundary geometry. See below.
+fluids:    # A list of specifications for the initial state of all fluid bodies. See below.
 ```
+
+#### Scene classes
+
+The **Scene** class allows for full customization: simulation parameters are in LBM units and there are no constraints on the specification. For convenience, we define more specific scene types which also support additional features.
+
+The **DatasetScene** class accepts simulation parameters in real world units (see main manuscript) and allows for vast customization of the export. In particular, it allows to export geometry and define multiple rendering cameras. The updated class specification is:
+```yaml
+scene_class: # "DatasetScene"
+sim_params:
+    fx:     # Global volume force in x dimension [m/s^2]
+    fy:     # Global volume force in y dimension [m/s^2]
+    fz:     DEPRECATED  # Fixed to -9.81 [m/s^2] (specified value is ignored)
+    nu:     # Kinematic shear viscosity [m^2/s]
+    v_init: # 3D initial velocity of the fluid [m/s]
+export:
+    geometry:  # "density" or "particles"
+    update_dt: DEPRECATED  # Specified value is ignored, actual value is computed.
+    cameras: 
+        width:     # Rendering width
+        height:    # Rendering height
+        fov:       # Field of view of rendering camera
+        positions: # A list of points specifying multiple camera positions.
+                   # Coordinates have no specific ranges, but the scene is embedded in [[0; Nx], [0; Ny], [0; Nz]]
+        rotations: # A list of camera rotations, as [x rotation, z rotation] in degrees.
+                   # We recommend generating these with the "./scripts/generate_nerf_cameras.py" script.
+                   # Must have the same number of elements as export.cameras.positions.
+        zoom:      # A list of zoom values for the specified cameras.
+                   # Must have the same number of elements as export.cameras.positions.
+```
+
+The **NeRFScene** class has the same configuration of a **DatasetScene**, but it implements exporting camera parameters for all viewpoints. The only required variation is
+```yaml
+scene_class: # "NeRFScene"
+```
+
+#### Obstacles and fluid specifications
+
+To add geometry to the scene, you should specify one or more geometric primitives in the `obstacles` and `fluids` attributes. Three types of primitives are currently supported. We show the syntax template below. Recall that all coordinates have no specific range, but the scene is embedded in `[[0; Nx], [0; Ny], [0; Nz]]`. 
+```yaml
+{
+    type: sphere
+    center: # Center of the sphere in the simulation domain 
+    radius: # Radius of the sphere
+},
+{
+    type: cuboid
+    center:   # Center of the sphere in the simulation domain
+    rotation: # Rotation of the cuboid over all three axes, in degrees
+    sides:    # Length of cuboid sides in all three axes
+},
+{
+    type: mesh
+    mesh_path: # Path to an STL mesh to load
+    center:    # Center of the mesh in the simulation domain. 
+    rotation:  # Rotation of the object over all three axes, in degrees
+    scale:     # Scaling of the object over all three axes
+    size:      # Scale the shape by specifying the maximum bounding box side length
+               # (Does not change shape proportions)
+}
+
+```
+
 
 ### Datasets
 
+To specify a dataset for generation, three types of settings are required: a) global generation parameters, b) scene constants, and c) scene variables. We describe the three categories separately.
+
+#### Global generation parameters
+
 ```yaml
-export_root: D:\\data\\FSD\\export\\obstacles 
-num_scenes: 400
-seed: 188881
-constants:
-    scene_class: DatasetScene,
-    sim_params: 
-        Nx: 256
-        Ny: 256
-        Nz: 256
-        fx: 0.0
-        fy: 0.0
-        fz: -0.0001
-        alpha: 0.0
-        beta: 0.0
-        P_n: 3000
-        P_rho: 1.0
-        sigma: 0.00003
-        nu: 0.002
-    graphics: 
-        skybox: .\\assets\\hdri\\netball_court.png
-    export: 
-        geometry: particles
-        python_exec: C:\\Users\\pc\\miniconda3\\envs\\nerfpic\\python.exe
-        make_video_script: .\\script\\make_video.py
-        cameras: 
-            width: 1080
-            height: 720
-            fov: 100.0
-            positions: [
-                [-42.09743717, 45.51026209,-95.49428007]
-            ]
-            rotations: [
-                [222.76912712,152.33070927]
-            ]
-            zoom: [
-                250.0
-            ]
-        fps: 50
-        simulation_steps: 250
-        update_dt: 20
-        video_seconds: 5.0
-variables: 
-    fluids: [
-        {
-            type: sphere
-            N: [256, 256, 256]
-            center_range: [
-                [128, 128], [128, 128], [153, 240]
-            ]
-            rad_range: [20, 40]
-            on_ground: false
-            inside: true
-            nsamples: 100
-        }
-    ],
-    obstacles: [
-        {
-            type: mesh
-            N: [256, 256, 256]
-            assets: [
-                .\\assets\\stl\\baseball.stl,
-                .\\assets\\stl\\cube.stl,
-                .\\assets\\stl\\bust.stl,
-                .\\assets\\stl\\duck.stl,
-                .\\assets\\stl\\ship.stl
-            ]
-            center_range: [
-                [128, 128], [128, 128], [45, 60]
-            ]
-            rot_range: [
-                [90.0, 90.0], [0.0, 0.0], [0.0, 90.0]
-            ]
-            size_range: [70, 120]
-            inside: true
-            nsamples: 1000
-        }
-    ]
+export_root: # Path to the directory that will contain the generated dataset
+num_scenes:  # How many scenes should the dataset contain
+seed:        # Random seed for dataset replication
 ```
+
+#### Scene constants
+
+Under the
+```yaml
+constants:
+```
+attribute, users may specify Scene attributes identically to what we showed in the previous section. These will be identical for all scenes in the dataset: for instance, it makes sense to have constant simulation resolution throughout the dataset. For example:
+
+```yaml
+constants:
+    sim_params:
+        Nx: 128
+        Ny: 128
+        Nz: 128
+```
+
+#### Scene variables
+
+We define a number of samplers for Scene variables. Under the 
+```yaml
+variables: 
+```
+attribute, following the syntax specified for Scenes in the previous section, users may specify a sampler configuration rather than a value for the dataset variables. We show the syntax for all our sampler types. First, we specify primitive distributions for float variables:
+
+```yaml
+{
+    type: collection
+    values: # A list of float values
+},
+{
+    type: linscale
+    vmin:   # (float) Minimum value for linear space
+    vmax:   # (float) Maximum value for linear space
+    nsteps: # Number of steps for linear space
+},
+{
+    type: normal
+    mean:     # (float) Mean for the normal distribution
+    std:      # (float) std for the normal distribution
+    nsamples: # Number of samples from normal distribution
+},
+{
+    type: uniform  # Uniform distribution over a float range
+    lo:       # (float) Lower bound of uniform distribution
+    hi:       # (float) Upper bound of uniform distribution
+    nsamples: # Number of samples from uniform distribution
+}
+```
+
+Then, we also support random distributions for complex types such as geometric structures, to add variation to the datasets also in terms of initial fluid state and boundary geometry.
+
+```yaml
+{
+    type: sphere
+    N:            # Shortcut for simulation resolution [Nx, Ny, Nz]
+    center_range: # Ranges to sample the center coordinates uniformly
+                  # [[x_min, x_max], [y_min, y_max], [z_min, z_max]]
+    rad_range:    # Range to sample the radius uniformly [r_min, r_max]
+    on_ground:    # Translate the sampled sphere to intersect the z=0 plane
+    inside:       # Translate the sampled sphere to ensure it is completely inside the simulation domain
+    nsamples:     # How many spheres to sample
+},
+{
+    type: cuboid,
+    N:            # Shortcut for simulation resolution [Nx, Ny, Nz]
+    center_range: # Ranges to sample the center coordinates uniformly
+                  # [[x_min, x_max], [y_min, y_max], [z_min, z_max]]
+    sides_range:  # Ranges to sample the cuboid sides uniformly
+                  # [[sx_min, sx_max], [sy_min, sy_max], [sz_min, sz_max]]
+    rot_range:    # Ranges to sample the cuboid rotation (in degrees) uniformly
+                  # [[rx_min, rx_max], [ry_min, ry_max], [rz_min, rz_max]]
+    on_ground:    # Translate the sampled cuboid to intersect the z=0 plane
+    nsamples:     # How many cuboids to sample
+},
+{
+    type: mesh,
+    N:            # Shortcut for simulation resolution [Nx, Ny, Nz]
+    assets:       # A list of STL meshes to sample the geometry from
+    center_range: # Ranges to sample the center coordinates uniformly
+                  # [[x_min, x_max], [y_min, y_max], [z_min, z_max]]
+    rot_range:    # Ranges to sample the object rotation (in degrees) uniformly
+                  # [[rx_min, rx_max], [ry_min, ry_max], [rz_min, rz_max]]
+    size_range:   # Range to sample the object size uniformly [s_min, s_max]
+    inside:       # Translate the sampled object to ensure it is completely inside the simulation domain
+    nsamples:     # How many objects to sample
+}
+```
+
+An example:
+
+```yaml
+variables:
+    sim_params:
+        nu: 
+            type: linscale
+            vmin: 0.001
+            vmax: 0.004
+            nsteps: 100
+    graphics:
+        skybox:
+            type: collection
+            values:
+                - ".\\assets\\hdri\\netball_court.png"
+                - ".\\assets\\hdri\\pine_attic.png"
+    obstacles:
+        - type: mesh,
+          N: [256, 256, 256],
+          assets: [
+              .\\assets\\stl\\baseball.stl,
+              .\\assets\\stl\\cube.stl,
+              .\\assets\\stl\\bust.stl,
+              .\\assets\\stl\\duck.stl,
+              .\\assets\\stl\\ship.stl
+          ],
+          center_range: [
+              [128, 128], [128, 128], [45, 60]
+          ],
+          rot_range: [
+              [90.0, 90.0], [0.0, 0.0], [0.0, 90.0]
+          ],
+          size_range: [70, 120],
+          inside: true,
+          nsamples: 1000
