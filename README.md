@@ -208,7 +208,9 @@ We define a number of samplers for Scene variables. Under the
 ```yaml
 variables: 
 ```
-attribute, following the syntax specified for Scenes in the previous section, users may specify a sampler configuration rather than a value for the dataset variables. We show the syntax for all our sampler types. First, we specify primitive distributions for float variables:
+attribute, following the structure specified for Scenes in the previous section, users may specify a sampler configuration rather than a value for the dataset variables. 
+The set of all possible scenes is defined by the cartesian product of all sample sets of each variable. Then, a uniformly random subset of all these is chosen, with its cardinality specified via the `num_scenes` global attribute.
+We show the syntax for all our sampler types. First, we specify primitive distributions for float variables:
 
 ```yaml
 {
