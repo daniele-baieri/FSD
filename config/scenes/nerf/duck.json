@@ -15,7 +15,7 @@
         "nu": 0.05
     },
     "graphics": {
-        "matte_fluid": false,
+        "matte_fluid": true,
         "skybox": ".\\assets\\hdri\\netball_court.png"
     },
     "export": {
