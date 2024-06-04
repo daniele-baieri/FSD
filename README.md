@@ -21,7 +21,7 @@ To support optional features (loading msgpack, visualizing exported data), run:
 pip install msgpack msgpack-numpy vedo zstandard
 ```
 
-Lastly, you should download our mesh/hdri assets from [here]() and extract them into the `assets/` folder in order to replicate the data we describe in the main manuscript.
+Lastly, you should download our mesh/hdri assets from [here](https://drive.google.com/file/d/1x3DCvcHi6gs0USRgdljBh2aeMm7hEVEO/view?usp=drive_link) and extract them into the `assets/` folder in order to replicate the data we describe in the main manuscript.
 
 ___
 ## Core features
